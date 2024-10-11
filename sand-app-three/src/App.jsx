@@ -4,12 +4,7 @@ import Three from './Three.jsx'
 
 function App() {
   return(
-
-    <div>
-      <p>hello there</p>
-      <Three />
-    </div>
-  
+    <Three />
   )
   
 }
