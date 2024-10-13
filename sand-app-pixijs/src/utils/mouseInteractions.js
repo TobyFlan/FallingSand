@@ -16,15 +16,24 @@ export default function setupMouseInteractions(container, grid, squares, squareS
         if (gridY >= 0 && gridY < gridSizeY && gridX >= 0 && gridX < gridSizeX && grid[gridY][gridX] === 0) {
             grid[gridY][gridX] = 1;
 
-            // Update the visual grid
-            const newSquare = new Graphics();
-            newSquare.beginFill(0xFFD700); // Sand particle color
-            newSquare.drawRect(0, 0, squareSize, squareSize);
-            newSquare.endFill();
-            newSquare.x = gridX * squareSize;
-            newSquare.y = gridY * squareSize;
-            container.addChild(newSquare);
-            squares[gridY][gridX] = newSquare;
+            // Reuse existing square if available, or create a new one
+            if (!squares[gridY][gridX]) {
+                // Create a new square for sand
+                const newSquare = new Graphics();
+                newSquare.beginFill(0xFFD700); // Sand particle color
+                newSquare.drawRect(0, 0, squareSize, squareSize);
+                newSquare.endFill();
+                newSquare.x = gridX * squareSize;
+                newSquare.y = gridY * squareSize;
+                container.addChild(newSquare);
+                squares[gridY][gridX] = newSquare;
+            } else {
+                // If square already exists, just update its color to sand
+                squares[gridY][gridX].clear();
+                squares[gridY][gridX].beginFill(0xFFD700); // Sand particle color
+                squares[gridY][gridX].drawRect(0, 0, squareSize, squareSize);
+                squares[gridY][gridX].endFill();
+            }
         }
     };
 

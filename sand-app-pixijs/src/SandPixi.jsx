@@ -10,11 +10,11 @@ const generateGrid = (gridSizeX, gridSizeY) => {
     let grid = Array.from({ length: gridSizeY }, () => Array(gridSizeX).fill(0));
 
     // add some sand particles in random locations
-    for (let i = 0; i < gridSizeX * gridSizeY * 0.01; i++) {
-        const x = Math.floor(Math.random() * gridSizeX);
-        const y = Math.floor(Math.random() * gridSizeY);
-        grid[y][x] = 1;
-    }
+    // for (let i = 0; i < gridSizeX * gridSizeY * 0.01; i++) {
+    //     const x = Math.floor(Math.random() * gridSizeX);
+    //     const y = Math.floor(Math.random() * gridSizeY);
+    //     grid[y][x] = 1;
+    // }
 
     return grid;
 
@@ -35,7 +35,7 @@ const getGridSize = (app, squareSize) => {
 export default function run(app) {
     const container = new Container();
     app.stage.addChild(container);
-    const squareSize = 2;
+    const squareSize = 50;
     const { gridSizeX, gridSizeY } = getGridSize(app, squareSize);
     container.interactive = true;
     container.hitArea = app.screen;
