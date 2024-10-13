@@ -1,6 +1,5 @@
 import { Stage } from "@pixi/react";
 import SandApp from "./SandApp";
-import { useState } from 'react'
 import './App.css'
 
 function App() {
