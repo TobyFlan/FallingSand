@@ -20,6 +20,30 @@ const generateGrid = (gridSizeX, gridSizeY) => {
 
 };
 
+
+// function to move sand
+const moveSand = (container, squares, grid, x, y, newX, newY, squareSize) => {
+
+    let hue = squares[y][x].hue;
+
+    if(squares[y][x]) {
+        container.removeChild(squares[y][x]);
+        squares[y][x] = null;
+    }
+
+    const newSquare = new Graphics();
+    newSquare.hue = hue;
+    newSquare.beginFill(hue);
+    newSquare.drawRect(0, 0, squareSize, squareSize);
+    newSquare.endFill();
+    newSquare.x = newX * squareSize;
+    newSquare.y = newY * squareSize;
+    container.addChild(newSquare);
+    squares[newY][newX] = newSquare;
+
+}
+
+
 // function to dynamically calculate the grid size based on the app view size
 const getGridSize = (app, squareSize) => {
 
@@ -35,7 +59,7 @@ const getGridSize = (app, squareSize) => {
 export default function run(app) {
     const container = new Container();
     app.stage.addChild(container);
-    const squareSize = 50;
+    const squareSize = 5;
     const { gridSizeX, gridSizeY } = getGridSize(app, squareSize);
     container.interactive = true;
     container.hitArea = app.screen;
@@ -49,18 +73,8 @@ export default function run(app) {
     for(let i = 0; i < gridSizeY; i++) {
         squares[i] = [];
         for(let j = 0; j < gridSizeX; j++) {
-            if (grid[i][j] === 1) {  // Only create a square if there's a sand particle
-                const square = new Graphics();
-                square.beginFill(0xFFD700); // Sand color
-                square.drawRect(0, 0, squareSize, squareSize);
-                square.endFill();
-                square.x = j * squareSize;
-                square.y = i * squareSize;
-                container.addChild(square);
-                squares[i][j] = square;
-            } else {
-                squares[i][j] = null; // No square for empty cells
-            }
+            squares[i][j] = null; // No square for empty cells
+
         }
     }
 
@@ -76,22 +90,7 @@ export default function run(app) {
                     // Move sand down
                     grid[y][x] = 0;
                     grid[y + 1][x] = 1;
-
-                    // Remove the square from the old position
-                    if (squares[y][x]) {
-                        container.removeChild(squares[y][x]);
-                        squares[y][x] = null;
-                    }
-
-                    // Create a new square for the new position
-                    const newSquare = new Graphics();
-                    newSquare.beginFill(0xFFD700); // Sand particle color
-                    newSquare.drawRect(0, 0, squareSize, squareSize);
-                    newSquare.endFill();
-                    newSquare.x = x * squareSize;
-                    newSquare.y = (y + 1) * squareSize;
-                    container.addChild(newSquare);
-                    squares[y + 1][x] = newSquare;
+                    moveSand(container, squares, grid, x, y, x, y + 1, squareSize);
 
                 }
                 else if (grid[y][x] === 1) { 
@@ -106,72 +105,27 @@ export default function run(app) {
                         if (moveRight) {
                             grid[y][x] = 0;
                             grid[y + 1][x + 1] = 1;
-    
-                            if(squares[y][x]) {
-                                container.removeChild(squares[y][x]);
-                                squares[y][x] = null;
-                            }
-
-                            const newSquare = new Graphics();
-                            newSquare.beginFill(0xFFD700); // Sand particle color
-                            newSquare.drawRect(0, 0, squareSize, squareSize);
-                            newSquare.endFill();
-                            newSquare.x = (x + 1) * squareSize;
-                            newSquare.y = (y + 1) * squareSize;
-                            container.addChild(newSquare);
-                            squares[y + 1][x + 1] = newSquare;
-
+                            
+                            moveSand(container, squares, grid, x, y, x + 1, y + 1, squareSize);
+                            
                         } else {
                             grid[y][x] = 0;
                             grid[y + 1][x - 1] = 1;
     
-                            if(squares[y][x]) {
-                                container.removeChild(squares[y][x]);
-                                squares[y][x] = null;
-                            }
-                            const newSquare = new Graphics();
-                            newSquare.beginFill(0xFFD700); // Sand particle color
-                            newSquare.drawRect(0, 0, squareSize, squareSize);
-                            newSquare.endFill();
-                            newSquare.x = (x - 1) * squareSize;
-                            newSquare.y = (y + 1) * squareSize;
-                            container.addChild(newSquare);
-                            squares[y + 1][x - 1] = newSquare;
+                            moveSand(container, squares, grid, x, y, x - 1, y + 1, squareSize);
 
                         }
                     } else if (canMoveRight) {
                         grid[y][x] = 0;
                         grid[y + 1][x + 1] = 1;
 
-                        if(squares[y][x]) {
-                            container.removeChild(squares[y][x]);
-                            squares[y][x] = null;
-                        }
-
-                        const newSquare = new Graphics();
-                        newSquare.beginFill(0xFFD700); // Sand particle color
-                        newSquare.drawRect(0, 0, squareSize, squareSize);
-                        newSquare.endFill();
-                        newSquare.x = (x + 1) * squareSize;
-                        newSquare.y = (y + 1) * squareSize;
-                        container.addChild(newSquare);
-                        squares[y + 1][x + 1] = newSquare;
+                        moveSand(container, squares, grid, x, y, x + 1, y + 1, squareSize);
+                        
                     } else if (canMoveLeft) {
                         grid[y][x] = 0;
                         grid[y + 1][x - 1] = 1;
 
-                        if(squares[y][x]) {
-                            container.removeChild(squares[y][x]);
-                            squares[y][x] = null;
-                        }
-                        const newSquare = new Graphics();
-                        newSquare.beginFill(0xFFD700); // Sand particle color
-                        newSquare.drawRect(0, 0, squareSize, squareSize);
-                        newSquare.endFill();
-                        newSquare.x = (x - 1) * squareSize;
-                        newSquare.y = (y + 1) * squareSize;
-                        container.addChild(newSquare);
-                        squares[y + 1][x - 1] = newSquare;
+                        moveSand(container, squares, grid, x, y, x - 1, y + 1, squareSize);
                     }
                 }
             }

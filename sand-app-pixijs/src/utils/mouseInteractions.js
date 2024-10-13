@@ -1,10 +1,12 @@
 
 // mouseInteractions.js
 import { Graphics } from "pixi.js";
+import hueRandomizer from "./hueRandomizer";
 
 export default function setupMouseInteractions(container, grid, squares, squareSize, gridSizeX, gridSizeY) {
     let isMouseDown = false;
     let intervalId = null;
+    const getNextColor = hueRandomizer();
 
     // Function to add sand particle at and around the mouse position in a 3x3 grid
     const addSandAtMousePosition = (event) => {
@@ -19,8 +21,10 @@ export default function setupMouseInteractions(container, grid, squares, squareS
             // Reuse existing square if available, or create a new one
             if (!squares[gridY][gridX]) {
                 // Create a new square for sand
+                const hue = getNextColor();
                 const newSquare = new Graphics();
-                newSquare.beginFill(0xFFD700); // Sand particle color
+                newSquare.hue = hue; // Sand particle color
+                newSquare.beginFill(newSquare.hue); 
                 newSquare.drawRect(0, 0, squareSize, squareSize);
                 newSquare.endFill();
                 newSquare.x = gridX * squareSize;
