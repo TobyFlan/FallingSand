@@ -12,10 +12,14 @@ function hslToHex(h, s, l) {
 
 export default function hueRandomizer() {
 
-    let hue = 0; // Initial hue value
+    let hue = 320; // Initial hue value
+    let inc = 1;
 
     return function getNextColor() {
-      hue = (hue + 1) % 40; // Increment hue and wrap around at 360
+      hue = (hue + inc); // Increment hue and wrap around at 360
+      if(hue >= 340 || hue <= 250) {
+        inc = -inc;
+      }
       return hslToHex(hue, 100, 50); // Convert HSL to hex and return
     };
   }
