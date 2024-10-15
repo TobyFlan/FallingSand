@@ -1,12 +1,12 @@
 
 // mouseInteractions.js
 import { Graphics } from "pixi.js";
-import hueRandomizer from "./hueRandomizer";
+import hueScaler from "./hueScaler";
 
 export default function setupMouseInteractions(container, grid, squares, squareSize, gridSizeX, gridSizeY) {
     let isMouseDown = false;
     let intervalId = null;
-    const getNextColor = hueRandomizer();
+    const getNextColor = hueScaler();
 
     // Function to add sand particle at and around the mouse position in a 3x3 grid
     const addSandAtMousePosition = (event) => {

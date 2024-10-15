@@ -10,7 +10,7 @@ function hslToHex(h, s, l) {
 }
 
 
-export default function hueRandomizer() {
+export default function hueScaler() {
 
     let hue = 320; // Initial hue value
     let inc = 1;

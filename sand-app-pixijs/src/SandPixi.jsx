@@ -72,55 +72,72 @@ export default function run(app) {
     // Add mouse interactions
     setupMouseInteractions(container, grid, squares, squareSize, gridSizeX, gridSizeY);
 
+    const moveSandLogic = (x, y) => {
+        if (grid[y][x] === 1 && grid[y + 1][x] === 0) { // If there's sand and empty space below
+            // Move sand down
+            grid[y][x] = 0;
+            grid[y + 1][x] = 1;
+            moveSand(container, squares, grid, x, y, x, y + 1, squareSize);
+
+        }
+        else if (grid[y][x] === 1) { 
+            // Check if diagonal left or right is available
+            const canMoveLeft = grid[y + 1][x - 1] === 0 && x - 1 >= 0;
+            const canMoveRight = grid[y + 1][x + 1] === 0 && x + 1 < gridSizeX;
+
+            if (canMoveLeft && canMoveRight) {
+                // Randomly choose to move left or right
+                const moveRight = Math.random() > 0.5; // 50% chance to move right
+
+                if (moveRight) {
+                    grid[y][x] = 0;
+                    grid[y + 1][x + 1] = 1;
+                    
+                    moveSand(container, squares, grid, x, y, x + 1, y + 1, squareSize);
+                    
+                } else {
+                    grid[y][x] = 0;
+                    grid[y + 1][x - 1] = 1;
+
+                    moveSand(container, squares, grid, x, y, x - 1, y + 1, squareSize);
+
+                }
+            } else if (canMoveRight) {
+                grid[y][x] = 0;
+                grid[y + 1][x + 1] = 1;
+
+                moveSand(container, squares, grid, x, y, x + 1, y + 1, squareSize);
+                
+            } else if (canMoveLeft) {
+                grid[y][x] = 0;
+                grid[y + 1][x - 1] = 1;
+
+                moveSand(container, squares, grid, x, y, x - 1, y + 1, squareSize);
+            }
+        }
+    };
+
+    // randomise order of reading grid to make falling sand more realistic
+    let updateLeft = true;
+
     // simple falling sand logic
     const updateSand = () => {
         // start from bottom and go upwards
-        for (let y = gridSizeY - 2; y >= 0; y--) { // Avoid bottom row
-            for (let x = 0; x < gridSizeX; x++) {
-                if (grid[y][x] === 1 && grid[y + 1][x] === 0) { // If there's sand and empty space below
-                    // Move sand down
-                    grid[y][x] = 0;
-                    grid[y + 1][x] = 1;
-                    moveSand(container, squares, grid, x, y, x, y + 1, squareSize);
-
-                }
-                else if (grid[y][x] === 1) { 
-                    // Check if diagonal left or right is available
-                    const canMoveLeft = grid[y + 1][x - 1] === 0 && x - 1 >= 0;
-                    const canMoveRight = grid[y + 1][x + 1] === 0 && x + 1 < gridSizeX;
-    
-                    if (canMoveLeft && canMoveRight) {
-                        // Randomly choose to move left or right
-                        const moveRight = Math.random() > 0.5; // 50% chance to move right
-    
-                        if (moveRight) {
-                            grid[y][x] = 0;
-                            grid[y + 1][x + 1] = 1;
-                            
-                            moveSand(container, squares, grid, x, y, x + 1, y + 1, squareSize);
-                            
-                        } else {
-                            grid[y][x] = 0;
-                            grid[y + 1][x - 1] = 1;
-    
-                            moveSand(container, squares, grid, x, y, x - 1, y + 1, squareSize);
-
-                        }
-                    } else if (canMoveRight) {
-                        grid[y][x] = 0;
-                        grid[y + 1][x + 1] = 1;
-
-                        moveSand(container, squares, grid, x, y, x + 1, y + 1, squareSize);
-                        
-                    } else if (canMoveLeft) {
-                        grid[y][x] = 0;
-                        grid[y + 1][x - 1] = 1;
-
-                        moveSand(container, squares, grid, x, y, x - 1, y + 1, squareSize);
-                    }
+        if(updateLeft){
+            for (let y = gridSizeY - 2; y >= 0; y--) { // Avoid bottom row
+                for (let x = 0; x < gridSizeX; x++) {
+                    moveSandLogic(x, y);
                 }
             }
         }
+        else{
+            for (let y = gridSizeY - 2; y >= 0; y--) { // Avoid bottom row
+                for (let x = gridSizeX - 1; x >= 0; x--) {
+                    moveSandLogic(x, y);
+                }
+            }
+        }
+        updateLeft = !updateLeft;
     };
     
 
